@@ -24,6 +24,12 @@ $ composer require twineis/raven-php
 
 For Laravel add the service provider in `config/app.php`:
 
+For Laravel 5.6
+```php
+Twine\Raven\Providers\Laravel56ServiceProvider::class,
+```
+
+For Laravel 4.* and 5.* < 5.6
 ```php
 Twine\Raven\Providers\LaravelServiceProvider::class,
 ```
