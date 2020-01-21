@@ -3,8 +3,9 @@
 namespace Twine\Raven;
 
 use Exception;
-use Illuminate\Queue\QueueManager;
 use Raven_Client;
+use Illuminate\Support\Arr;
+use Illuminate\Queue\QueueManager;
 
 class Client extends Raven_Client
 {
@@ -43,10 +44,10 @@ class Client extends Raven_Client
                     'logger' => 'raven-php',
                 ],
             ],
-            array_get($config, 'options', [])
+            Arr::get($config, 'options', [])
         );
 
-        parent::__construct(array_get($config, 'dsn', ''), $options);
+        parent::__construct(Arr::get($config, 'dsn', ''), $options);
     }
 
     /**
@@ -64,7 +65,7 @@ class Client extends Raven_Client
      */
     public function send(&$data)
     {
-        $this->eventId = array_get($data, 'event_id');
+        $this->eventId = Arr::get($data, 'event_id');
 
         // send error now if queue not set
         if (is_null($this->queue)) {
@@ -76,11 +77,11 @@ class Client extends Raven_Client
         // if failed to add job to queue send it now
         try {
             $this->queue
-                ->connection(array_get($this->config, 'queue.connection'))
+                ->connection(Arr::get($this->config, 'queue.connection'))
                 ->push(
                     Job::class,
                     $data,
-                    array_get($this->config, 'queue.name')
+                    Arr::get($this->config, 'queue.name')
                 );
         } catch (Exception $e) {
             return $this->sendError($data);
